@@ -21,5 +21,5 @@ This module create the following resource.
 
 
 ### Inputs
- *
- *
+ * vpc_cidr - (Required). User must supply the cdir for vpc
+ * project_name - (Required). User must supply the projectx.
