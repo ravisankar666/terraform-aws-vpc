@@ -31,7 +31,7 @@ resource "aws_subnet" "public" {
   count = length(var.public_subnet_cidrs)  
   vpc_id     = aws_vpc.main.id
   cidr_block = var.public_subnet_cidrs[count.index]
-  availability_zone = local.az_names
+  availability_zone = local.az_names[count.index]
   map_public_ip_on_launch = true
 
 
@@ -57,7 +57,7 @@ resource "aws_subnet" "private" {
     var.private_subnet_tags,
     local.common_tags,
     {
-        Name = "${local.common_name_suffix}-private-${local.az_names[count.indedx]}"
+        Name = "${local.common_name_suffix}-private-${local.az_names[count.index]}"
     }
 
   )
@@ -75,7 +75,7 @@ resource "aws_subnet" "database" {
     var.database_subnet_tags,
     local.common_tags,
     {
-        Name = "${local.common_name_suffix}-database-${local.az_names[count.indedx]}"
+        Name = "${local.common_name_suffix}-database-${local.az_names[count.index]}"
     }
 
   )
@@ -184,19 +184,19 @@ resource "aws_route_table_association" "public" {
   count = length(var.public_subnet_cidrs)
 
   subnet_id      = aws_subnet.public[count.index].id
-  route_table_id = aws_route_table.bar.id
+  route_table_id = aws_route_table.public.id
 }
 
 resource "aws_route_table_association" "private" {
   count = length(var.private_subnet_cidrs)
 
   subnet_id      = aws_subnet.private[count.index].id
-  route_table_id = aws_route_table.bar.id
+  route_table_id = aws_route_table.private.id
 }
 
 resource "aws_route_table_association" "database" {
   count = length(var.database_subnet_cidrs)
 
   subnet_id      = aws_subnet.database[count.index].id
-  route_table_id = aws_route_table.bar.id
+  route_table_id = aws_route_table.database.id
 }
